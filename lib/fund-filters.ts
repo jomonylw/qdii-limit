@@ -1,21 +1,5 @@
 import type { ClassificationScope, ClassificationSource, RegionCategory, ThemeCategory, TradingForm } from "@/lib/types"
 
-const OVERSEAS_KEYWORDS = [
-  "QDII",
-  "纳斯达克",
-  "纳指",
-  "NASDAQ",
-  "Nasdaq",
-  "标普",
-  "美国",
-  "全球",
-  "境外",
-  "恒生",
-  "香港",
-]
-const OVERSEAS_THEME_KEYWORDS = OVERSEAS_KEYWORDS.filter(
-  (keyword) => keyword.toLowerCase() !== "qdii" && keyword !== "标普",
-)
 const NASDAQ_100_KEYWORDS = ["纳斯达克100", "纳指100", "NASDAQ100", "Nasdaq100", "NASDAQ 100", "Nasdaq 100"]
 
 export function includesAnyKeyword(value: string, keywords: string[]) {
@@ -145,17 +129,11 @@ export function getThemeCategory(name: string, type: string): ThemeCategory {
     return "china-internet"
   if (includesAnyKeyword(text, ["生物科技", "生物医药", "医疗保健", "医疗健康", "医药", "医疗", "创新药"]))
     return "biotech"
-  if (includesAnyKeyword(text, ["纳斯达克精选", "美国科技", "全球科技", "科技", "半导体", "芯片"])) return "us-tech"
-  if (includesAnyKeyword(text, ["香港", "港股通", "港股"])) return "hongkong"
-  if (includesAnyKeyword(text, ["日本", "日经"])) return "japan"
-  if (text.includes("印度")) return "india"
-  if (text.includes("越南")) return "vietnam"
-  if (includesAnyKeyword(text, ["德国", "DAX"])) return "germany"
+  if (includesAnyKeyword(text, ["纳斯达克精选", "美国科技", "全球科技", "海外科技", "科技", "半导体", "芯片"]))
+    return "tech"
   if (includesAnyKeyword(text, ["黄金", "原油", "石油", "油气", "能源", "天然气", "商品", "有色", "资源"]))
     return "commodity"
   if (includesAnyKeyword(text, ["REIT", "REITs", "REITS", "房地产信托"])) return "reits"
-  if (includesAnyKeyword(text, ["美国", "美股"])) return "us"
-  if (includesAnyKeyword(text, ["全球", "境外", "亚太", "新兴市场"])) return "global"
   return "other-qdii"
 }
 

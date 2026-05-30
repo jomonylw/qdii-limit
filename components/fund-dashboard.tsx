@@ -103,7 +103,7 @@ export function FundDashboard() {
     void loadFunds(false)
   }, [loadFunds])
 
-  const funds = data?.funds ?? []
+  const funds = React.useMemo(() => data?.funds ?? [], [data?.funds])
   const availableThemes = React.useMemo(() => getAvailableThemes(funds, toolbar.regions), [funds, toolbar.regions])
   const updateToolbar = React.useCallback(
     (next: Partial<FundToolbarState>) => {
