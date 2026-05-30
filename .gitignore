@@ -37,6 +37,11 @@ pnpm-debug.log*
 # vercel
 .vercel
 
+# local analysis and planning artifacts
+/plans/
+/reports/
+/scripts/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
