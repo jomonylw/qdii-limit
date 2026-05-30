@@ -4,7 +4,6 @@ import * as React from "react"
 import { CircleAlert, Clock, Globe2, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
 
-import { FundStatCards } from "@/components/fund-stat-cards"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { FundTable } from "@/components/fund-table"
 import { FundToolbar, type FundToolbarState } from "@/components/fund-toolbar"
@@ -117,7 +116,7 @@ export function FundDashboard() {
   const filteredFunds = React.useMemo(() => filterFunds(funds, toolbar), [funds, toolbar])
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.10),transparent_34%),linear-gradient(180deg,#f8fafc_0%,#eef2f7_100%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_32%),linear-gradient(180deg,#020617_0%,#0f172a_100%)]">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="flex items-start justify-between gap-4">
@@ -126,8 +125,9 @@ export function FundDashboard() {
                 <Globe2 className="h-3.5 w-3.5" />
                 QDII Limit Monitor
               </Badge>
-              <div>
+              <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-slate-50 md:text-4xl">QDII 基金限额看板</h1>
+                <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">追踪可申购 QDII 基金的单日申购额度、地区主题与开放状态。</p>
               </div>
             </div>
             <ThemeToggle className="shrink-0 md:hidden" />
@@ -160,16 +160,23 @@ export function FundDashboard() {
         ) : (
           <>
             <FundToolbar state={toolbar} availableThemes={availableThemes} loading={refreshing} onChange={updateToolbar} onRefresh={() => loadFunds(true)} />
-            <Card>
-              <CardContent className="p-4">
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500 dark:text-slate-400">
-                  <span>当前筛选结果：{filteredFunds.length.toLocaleString("zh-CN")} 条</span>
+            <Card className="overflow-hidden rounded-2xl border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/80">
+              <CardContent className="p-0">
+                <div className="flex flex-col gap-2 border-b border-slate-200/80 px-4 py-4 dark:border-slate-800/80 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-base font-semibold text-slate-950 dark:text-slate-50">基金列表</h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">当前筛选 {filteredFunds.length.toLocaleString("zh-CN")} 条</p>
+                  </div>
                 </div>
                 <FundTable funds={filteredFunds} />
               </CardContent>
             </Card>
           </>
         )}
+
+        <footer className="border-t border-slate-200/70 pt-4 text-center text-xs leading-6 text-slate-500 dark:border-slate-800/70 dark:text-slate-400">
+          <span>QDII Limit Monitor</span>
+        </footer>
       </div>
     </main>
   )

@@ -65,7 +65,7 @@ function getThemeLabel(theme: FundRecord["themeCategory"]) {
 
 function SortButton({ label, column }: { label: string; column: { toggleSorting: (desc?: boolean) => void; getIsSorted: () => false | "asc" | "desc" } }) {
   return (
-    <Button variant="ghost" size="sm" className="-ml-3 h-8" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+    <Button variant="ghost" size="sm" className="-ml-3 h-8 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
       {label}
       <ArrowUpDown className="ml-1 h-3 w-3" />
     </Button>
@@ -92,7 +92,7 @@ const columns: ColumnDef<FundRecord>[] = [
         href={getFundDetailUrl(row.original.code)}
         target="_blank"
         rel="noopener noreferrer"
-        className={`font-mono text-sm ${linkClassName}`}
+        className={`rounded-md bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700 dark:bg-slate-900 dark:text-slate-300 ${linkClassName}`}
       >
         {row.original.code}
       </a>
@@ -166,10 +166,10 @@ export function FundTable({ funds }: { funds: FundRecord[] }) {
   })
 
   return (
-    <div className="space-y-4">
-      <div className="overflow-hidden rounded-xl border bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+    <div>
+      <div className="overflow-hidden bg-white/60 dark:bg-slate-950/40">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur dark:bg-slate-900/95">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -183,7 +183,7 @@ export function FundTable({ funds }: { funds: FundRecord[] }) {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className="hover:bg-blue-50/40 dark:hover:bg-blue-950/20">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
@@ -191,23 +191,26 @@ export function FundTable({ funds }: { funds: FundRecord[] }) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-32 text-center text-slate-500">
-                  没有匹配的基金
+                <TableCell colSpan={columns.length} className="h-40 text-center">
+                  <div className="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400">
+                    <div className="font-medium text-slate-700 dark:text-slate-200">没有匹配的基金</div>
+                    <div className="text-sm">尝试清空主题、切换地区或查看全部状态。</div>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
-        <div>
-          第 {table.getState().pagination.pageIndex + 1} / {table.getPageCount() || 1} 页，共 {funds.length} 条
+      <div className="flex flex-col gap-3 border-t border-slate-200/80 bg-slate-50/70 px-4 py-3 text-sm text-slate-500 dark:border-slate-800/80 dark:bg-slate-900/40 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+        <div className="tabular-nums">
+          第 {table.getState().pagination.pageIndex + 1} / {table.getPageCount() || 1} 页 · 共 {funds.length.toLocaleString("zh-CN")} 条
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+        <div className="flex items-center gap-2 self-end sm:self-auto">
+          <Button variant="outline" size="sm" className="rounded-lg bg-white/80 dark:bg-slate-950/60" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
             上一页
           </Button>
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          <Button variant="outline" size="sm" className="rounded-lg bg-white/80 dark:bg-slate-950/60" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
             下一页
           </Button>
         </div>
