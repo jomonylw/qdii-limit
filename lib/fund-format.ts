@@ -18,7 +18,11 @@ export function formatAmount(value: number | null): string {
   return `${value.toLocaleString("zh-CN")} 元`
 }
 
-export function normalizeSubscribeStatus(rawStatus: string, maxAmount: number | null, minAmount: number | null): "开放申购" | "暂停申购" {
+export function normalizeSubscribeStatus(
+  rawStatus: string,
+  maxAmount: number | null,
+  minAmount: number | null,
+): "开放申购" | "暂停申购" {
   if (rawStatus.includes("暂停")) return "暂停申购"
   if (maxAmount == null) return rawStatus === "开放申购" ? "开放申购" : "暂停申购"
   if (maxAmount === 0) return "暂停申购"

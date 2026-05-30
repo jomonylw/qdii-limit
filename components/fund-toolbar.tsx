@@ -4,7 +4,13 @@ import { Check, ChevronDown, Filter, Globe2, Layers3, RefreshCw, Search } from "
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { RegionCategory, ThemeCategory } from "@/lib/types"
 
@@ -66,7 +72,13 @@ export type FundToolbarState = {
   limit: string
 }
 
-export function FundToolbar({ state, availableThemes, loading, onChange, onRefresh }: {
+export function FundToolbar({
+  state,
+  availableThemes,
+  loading,
+  onChange,
+  onRefresh,
+}: {
   state: FundToolbarState
   availableThemes: ThemeCategory[]
   loading: boolean
@@ -88,7 +100,13 @@ export function FundToolbar({ state, availableThemes, loading, onChange, onRefre
             className="h-10 rounded-xl border-slate-200/80 bg-white/80 pl-9 shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80"
           />
         </div>
-        <Button type="button" variant="outline" onClick={onRefresh} disabled={loading} className="h-10 rounded-xl border-slate-200/80 bg-white/80 shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onRefresh}
+          disabled={loading}
+          className="h-10 rounded-xl border-slate-200/80 bg-white/80 shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80"
+        >
           {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Filter className="h-4 w-4" />}
           刷新数据
         </Button>
@@ -97,114 +115,141 @@ export function FundToolbar({ state, availableThemes, loading, onChange, onRefre
       <div className="space-y-2">
         <div className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">筛选条件</div>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button type="button" variant="outline" className="h-10 justify-between rounded-xl border-slate-200/80 bg-white/80 font-normal shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80">
-              <span className="flex min-w-0 items-center gap-2">
-                <Globe2 className="h-4 w-4 text-slate-400" />
-                <span className="truncate">{getRegionSummary(state.regions)}</span>
-              </span>
-              <ChevronDown className="h-4 w-4 text-slate-400" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-72 max-w-96 p-0">
-            <div className="max-h-80 overflow-y-auto p-1">
-              <DropdownMenuItem onSelect={(event) => { event.preventDefault(); onChange({ regions: [] }) }}>
-                <span className="flex h-4 w-4 items-center justify-center">
-                  {state.regions.length === 0 ? <Check className="h-4 w-4" /> : null}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 justify-between rounded-xl border-slate-200/80 bg-white/80 font-normal shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80"
+              >
+                <span className="flex min-w-0 items-center gap-2">
+                  <Globe2 className="h-4 w-4 text-slate-400" />
+                  <span className="truncate">{getRegionSummary(state.regions)}</span>
                 </span>
-                全部地区
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {REGION_OPTIONS.map((option) => {
-                const checked = state.regions.includes(option.value)
-                return (
-                  <DropdownMenuItem
-                    key={option.value}
-                    onSelect={(event) => {
-                      event.preventDefault()
-                      onChange({
-                        regions: checked
-                          ? state.regions.filter((region) => region !== option.value)
-                          : [...state.regions, option.value],
-                      })
-                    }}
-                  >
-                    <span className="flex h-4 w-4 items-center justify-center">
-                      {checked ? <Check className="h-4 w-4" /> : null}
-                    </span>
-                    {option.label}
-                  </DropdownMenuItem>
-                )
-              })}
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button type="button" variant="outline" className="h-10 justify-between rounded-xl border-slate-200/80 bg-white/80 font-normal shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80">
-              <span className="flex min-w-0 items-center gap-2">
-                <Layers3 className="h-4 w-4 text-slate-400" />
-                <span className="truncate">{getThemeSummary(state.themes)}</span>
-              </span>
-              <ChevronDown className="h-4 w-4 text-slate-400" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-72 max-w-96 p-0">
-            <div className="max-h-80 overflow-y-auto p-1">
-            <DropdownMenuItem onSelect={(event) => { event.preventDefault(); onChange({ themes: [] }) }}>
-              <span className="flex h-4 w-4 items-center justify-center">
-                {state.themes.length === 0 ? <Check className="h-4 w-4" /> : null}
-              </span>
-              全部主题
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {visibleThemeOptions.map((option) => {
-              const checked = state.themes.includes(option.value)
-              return (
+                <ChevronDown className="h-4 w-4 text-slate-400" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-72 max-w-96 p-0"
+            >
+              <div className="max-h-80 overflow-y-auto p-1">
                 <DropdownMenuItem
-                  key={option.value}
                   onSelect={(event) => {
                     event.preventDefault()
-                    onChange({
-                      themes: checked
-                        ? state.themes.filter((theme) => theme !== option.value)
-                        : [...state.themes, option.value],
-                    })
+                    onChange({ regions: [] })
                   }}
                 >
                   <span className="flex h-4 w-4 items-center justify-center">
-                    {checked ? <Check className="h-4 w-4" /> : null}
+                    {state.regions.length === 0 ? <Check className="h-4 w-4" /> : null}
                   </span>
-                  {option.label}
+                  全部地区
                 </DropdownMenuItem>
-              )
-            })}
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <DropdownMenuSeparator />
+                {REGION_OPTIONS.map((option) => {
+                  const checked = state.regions.includes(option.value)
+                  return (
+                    <DropdownMenuItem
+                      key={option.value}
+                      onSelect={(event) => {
+                        event.preventDefault()
+                        onChange({
+                          regions: checked
+                            ? state.regions.filter((region) => region !== option.value)
+                            : [...state.regions, option.value],
+                        })
+                      }}
+                    >
+                      <span className="flex h-4 w-4 items-center justify-center">
+                        {checked ? <Check className="h-4 w-4" /> : null}
+                      </span>
+                      {option.label}
+                    </DropdownMenuItem>
+                  )
+                })}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        <Select value={state.status} onValueChange={(value) => onChange({ status: value })}>
-          <SelectTrigger className="h-10 rounded-xl bg-white/80 shadow-sm dark:bg-slate-950/80"><SelectValue placeholder="申购状态" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全部状态</SelectItem>
-            <SelectItem value="open">开放申购</SelectItem>
-            <SelectItem value="paused">暂停申购</SelectItem>
-          </SelectContent>
-        </Select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 justify-between rounded-xl border-slate-200/80 bg-white/80 font-normal shadow-sm dark:border-slate-800/80 dark:bg-slate-950/80"
+              >
+                <span className="flex min-w-0 items-center gap-2">
+                  <Layers3 className="h-4 w-4 text-slate-400" />
+                  <span className="truncate">{getThemeSummary(state.themes)}</span>
+                </span>
+                <ChevronDown className="h-4 w-4 text-slate-400" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-72 max-w-96 p-0"
+            >
+              <div className="max-h-80 overflow-y-auto p-1">
+                <DropdownMenuItem
+                  onSelect={(event) => {
+                    event.preventDefault()
+                    onChange({ themes: [] })
+                  }}
+                >
+                  <span className="flex h-4 w-4 items-center justify-center">
+                    {state.themes.length === 0 ? <Check className="h-4 w-4" /> : null}
+                  </span>
+                  全部主题
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {visibleThemeOptions.map((option) => {
+                  const checked = state.themes.includes(option.value)
+                  return (
+                    <DropdownMenuItem
+                      key={option.value}
+                      onSelect={(event) => {
+                        event.preventDefault()
+                        onChange({
+                          themes: checked
+                            ? state.themes.filter((theme) => theme !== option.value)
+                            : [...state.themes, option.value],
+                        })
+                      }}
+                    >
+                      <span className="flex h-4 w-4 items-center justify-center">
+                        {checked ? <Check className="h-4 w-4" /> : null}
+                      </span>
+                      {option.label}
+                    </DropdownMenuItem>
+                  )
+                })}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        <Select value={state.limit} onValueChange={(value) => onChange({ limit: value })}>
-          <SelectTrigger className="h-10 rounded-xl bg-white/80 shadow-sm dark:bg-slate-950/80"><SelectValue placeholder="限额" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全部限额</SelectItem>
-            <SelectItem value="low">低限额</SelectItem>
-            <SelectItem value="medium">中限额</SelectItem>
-            <SelectItem value="high">高限额</SelectItem>
-            <SelectItem value="none">无限额</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select value={state.status} onValueChange={(value) => onChange({ status: value })}>
+            <SelectTrigger className="h-10 rounded-xl bg-white/80 shadow-sm dark:bg-slate-950/80">
+              <SelectValue placeholder="申购状态" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部状态</SelectItem>
+              <SelectItem value="open">开放申购</SelectItem>
+              <SelectItem value="paused">暂停申购</SelectItem>
+            </SelectContent>
+          </Select>
 
+          <Select value={state.limit} onValueChange={(value) => onChange({ limit: value })}>
+            <SelectTrigger className="h-10 rounded-xl bg-white/80 shadow-sm dark:bg-slate-950/80">
+              <SelectValue placeholder="限额" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全部限额</SelectItem>
+              <SelectItem value="low">低限额</SelectItem>
+              <SelectItem value="medium">中限额</SelectItem>
+              <SelectItem value="high">高限额</SelectItem>
+              <SelectItem value="none">无限额</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>

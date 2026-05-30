@@ -61,7 +61,9 @@ function DashboardSkeleton() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-32" />)}
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Skeleton key={index} className="h-32" />
+        ))}
       </div>
       <Skeleton className="h-20" />
       <Skeleton className="h-[520px]" />
@@ -103,16 +105,19 @@ export function FundDashboard() {
 
   const funds = data?.funds ?? []
   const availableThemes = React.useMemo(() => getAvailableThemes(funds, toolbar.regions), [funds, toolbar.regions])
-  const updateToolbar = React.useCallback((next: Partial<FundToolbarState>) => {
-    setToolbar((current) => {
-      const merged = { ...current, ...next }
-      if (next.regions || next.themes) {
-        const nextAvailableThemes = getAvailableThemes(funds, merged.regions)
-        return { ...merged, themes: reconcileThemes(merged.themes, nextAvailableThemes) }
-      }
-      return merged
-    })
-  }, [funds])
+  const updateToolbar = React.useCallback(
+    (next: Partial<FundToolbarState>) => {
+      setToolbar((current) => {
+        const merged = { ...current, ...next }
+        if (next.regions || next.themes) {
+          const nextAvailableThemes = getAvailableThemes(funds, merged.regions)
+          return { ...merged, themes: reconcileThemes(merged.themes, nextAvailableThemes) }
+        }
+        return merged
+      })
+    },
+    [funds],
+  )
   const filteredFunds = React.useMemo(() => filterFunds(funds, toolbar), [funds, toolbar])
 
   return (
@@ -126,8 +131,12 @@ export function FundDashboard() {
                 QDII Limit Monitor
               </Badge>
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-slate-50 md:text-4xl">QDII 基金限额看板</h1>
-                <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">追踪可申购 QDII 基金的单日申购额度、地区主题与开放状态。</p>
+                <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-slate-50 md:text-4xl">
+                  QDII 基金限额看板
+                </h1>
+                <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
+                  追踪可申购 QDII 基金的单日申购额度、地区主题与开放状态。
+                </p>
               </div>
             </div>
             <ThemeToggle className="shrink-0 md:hidden" />
@@ -159,13 +168,21 @@ export function FundDashboard() {
           <DashboardSkeleton />
         ) : (
           <>
-            <FundToolbar state={toolbar} availableThemes={availableThemes} loading={refreshing} onChange={updateToolbar} onRefresh={() => loadFunds(true)} />
+            <FundToolbar
+              state={toolbar}
+              availableThemes={availableThemes}
+              loading={refreshing}
+              onChange={updateToolbar}
+              onRefresh={() => loadFunds(true)}
+            />
             <Card className="overflow-hidden rounded-2xl border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/80">
               <CardContent className="p-0">
                 <div className="flex flex-col gap-2 border-b border-slate-200/80 px-4 py-4 dark:border-slate-800/80 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h2 className="text-base font-semibold text-slate-950 dark:text-slate-50">基金列表</h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">当前筛选 {filteredFunds.length.toLocaleString("zh-CN")} 条</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      当前筛选 {filteredFunds.length.toLocaleString("zh-CN")} 条
+                    </p>
                   </div>
                 </div>
                 <FundTable funds={filteredFunds} />

@@ -63,9 +63,20 @@ function getThemeLabel(theme: FundRecord["themeCategory"]) {
   return labels[theme]
 }
 
-function SortButton({ label, column }: { label: string; column: { toggleSorting: (desc?: boolean) => void; getIsSorted: () => false | "asc" | "desc" } }) {
+function SortButton({
+  label,
+  column,
+}: {
+  label: string
+  column: { toggleSorting: (desc?: boolean) => void; getIsSorted: () => false | "asc" | "desc" }
+}) {
   return (
-    <Button variant="ghost" size="sm" className="-ml-3 h-8 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="-ml-3 h-8 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    >
       {label}
       <ArrowUpDown className="ml-1 h-3 w-3" />
     </Button>
@@ -76,7 +87,8 @@ function getFundDetailUrl(code: string) {
   return `https://fund.eastmoney.com/${code}.html`
 }
 
-const linkClassName = "underline-offset-4 transition-colors hover:text-blue-600 hover:underline dark:hover:text-blue-400"
+const linkClassName =
+  "underline-offset-4 transition-colors hover:text-blue-600 hover:underline dark:hover:text-blue-400"
 
 function getSortableSubscribeAmount(fund: FundRecord) {
   if (fund.subscribeStatus === "暂停申购") return -1
@@ -146,9 +158,7 @@ const columns: ColumnDef<FundRecord>[] = [
 ]
 
 export function FundTable({ funds }: { funds: FundRecord[] }) {
-  const [sorting, setSorting] = React.useState<SortingState>([
-    { id: "maxSubscribeAmount", desc: true },
-  ])
+  const [sorting, setSorting] = React.useState<SortingState>([{ id: "maxSubscribeAmount", desc: true }])
 
   const table = useReactTable({
     data: funds,
@@ -204,13 +214,26 @@ export function FundTable({ funds }: { funds: FundRecord[] }) {
       </div>
       <div className="flex flex-col gap-3 border-t border-slate-200/80 bg-slate-50/70 px-4 py-3 text-sm text-slate-500 dark:border-slate-800/80 dark:bg-slate-900/40 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between">
         <div className="tabular-nums">
-          第 {table.getState().pagination.pageIndex + 1} / {table.getPageCount() || 1} 页 · 共 {funds.length.toLocaleString("zh-CN")} 条
+          第 {table.getState().pagination.pageIndex + 1} / {table.getPageCount() || 1} 页 · 共{" "}
+          {funds.length.toLocaleString("zh-CN")} 条
         </div>
         <div className="flex items-center gap-2 self-end sm:self-auto">
-          <Button variant="outline" size="sm" className="rounded-lg bg-white/80 dark:bg-slate-950/60" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg bg-white/80 dark:bg-slate-950/60"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
             上一页
           </Button>
-          <Button variant="outline" size="sm" className="rounded-lg bg-white/80 dark:bg-slate-950/60" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg bg-white/80 dark:bg-slate-950/60"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
             下一页
           </Button>
         </div>

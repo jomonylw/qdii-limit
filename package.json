@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -30,6 +30,9 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "eslint-config-next": "^16.2.6",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
     "tailwindcss": "latest",
     "typescript": "latest"
   }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 import { Toaster } from "sonner"
 
 import { ThemeProvider } from "@/components/theme-provider"
@@ -7,7 +8,8 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "QDII 基金申购限额查询｜QDII Limit Monitor",
-  description: "快速查看、检索和监控 QDII 与海外基金的最新申购限额及状态。支持美国纳指 100、标普 500、港股科技、中概互联网等地区和主题的精准多选联动筛选，提供服务端 CDN 高速缓存。",
+  description:
+    "快速查看、检索和监控 QDII 与海外基金的最新申购限额及状态。支持美国纳指 100、标普 500、港股科技、中概互联网等地区和主题的精准多选联动筛选，提供服务端 CDN 高速缓存。",
   keywords: [
     "QDII基金",
     "海外基金",
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
     "东方财富基金",
     "QDII限额查询",
     "限大额",
-    "基金理财"
+    "基金理财",
   ],
   authors: [{ name: "jomonylw" }],
   creator: "jomonylw",
@@ -75,6 +77,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
+      <head>
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-CN4JPPK7XX" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-CN4JPPK7XX');
+          `}
+        </Script>
+      </head>
       <body>
         <ThemeProvider>
           {children}
