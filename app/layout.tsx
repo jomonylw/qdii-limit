@@ -56,6 +56,9 @@ export const metadata: Metadata = {
     description: "快速查看、检索和监控 QDII 与海外基金的最新申购限额及状态。支持多选联动筛选与服务端缓存。",
     images: ["/og.png"],
   },
+  verification: {
+    google: "7HFogv_3jnp93WlOKjh26rw86o8jp4SWJoOzzbrDnAY",
+  },
   robots: {
     index: true,
     follow: true,
