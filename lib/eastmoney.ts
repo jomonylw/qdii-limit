@@ -1,3 +1,4 @@
+import { countDirectSalesRecorded, getDirectSalesUpdatedAt } from "@/lib/direct-sales"
 import { normalizeFunds } from "@/lib/fund-normalizer"
 import type { EastmoneyRawResponse, FundRecord } from "@/lib/types"
 
@@ -72,5 +73,9 @@ export function buildFundsResponse(params: {
     pages: Number(params.raw.pages) || 0,
     showday: params.raw.showday ?? [],
     funds: params.overseasFunds,
+    directSales: {
+      recorded: countDirectSalesRecorded(params.overseasFunds.map((fund) => fund.code)),
+      updatedAt: getDirectSalesUpdatedAt(),
+    },
   }
 }

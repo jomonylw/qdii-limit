@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
       pages: 0,
       showday: [],
       funds: [],
+      directSales: { recorded: 0, updatedAt: null },
       error: error instanceof Error ? error.message : "未知错误",
     }
 

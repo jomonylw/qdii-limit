@@ -63,6 +63,7 @@ export type FundToolbarState = {
   themes: ThemeCategory[]
   status: string
   limit: string
+  form: string
 }
 
 export function FundToolbar({
@@ -107,7 +108,7 @@ export function FundToolbar({
 
       <div className="space-y-2">
         <div className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">筛选条件</div>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -227,6 +228,7 @@ export function FundToolbar({
             <SelectContent>
               <SelectItem value="all">全部状态</SelectItem>
               <SelectItem value="open">开放申购</SelectItem>
+              <SelectItem value="limited">限大额</SelectItem>
               <SelectItem value="paused">暂停申购</SelectItem>
             </SelectContent>
           </Select>
@@ -241,6 +243,19 @@ export function FundToolbar({
               <SelectItem value="medium">中限额</SelectItem>
               <SelectItem value="high">高限额</SelectItem>
               <SelectItem value="none">无限额</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={state.form} onValueChange={(value) => onChange({ form: value })}>
+            <SelectTrigger className="h-10 rounded-xl bg-white/80 shadow-sm dark:bg-slate-950/80">
+              <SelectValue placeholder="交易形态" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="off-exchange">全部场外基金</SelectItem>
+              <SelectItem value="all">全部交易形态</SelectItem>
+              <SelectItem value="etf-link">ETF 联接</SelectItem>
+              <SelectItem value="lof">LOF</SelectItem>
+              <SelectItem value="exchange-etf">场内 ETF</SelectItem>
             </SelectContent>
           </Select>
         </div>

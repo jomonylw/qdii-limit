@@ -40,8 +40,19 @@ pnpm-debug.log*
 # local analysis and planning artifacts
 /plans/
 /reports/
-/scripts/
+
+# generated data reports
+/data/direct-sales-watch.json
+/data/direct-sales-sync-report.json
+/data/.sync.lock
+/data/.last-sync
+/data/*.tmp
+
+# local agent workspace
+/.workbuddy-ai/
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/.idea/
