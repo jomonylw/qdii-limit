@@ -1,19 +1,29 @@
-import { Ban, CheckCircle2, Globe2, TrendingUp } from "lucide-react"
+import { Ban, CheckCircle2, Globe2, Gauge, HelpCircle, Store } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { FundRecord } from "@/lib/types"
+import type { ChannelKey, FundRecord } from "@/lib/types"
 
-export function FundStatCards({ funds }: { funds: FundRecord[] }) {
-  const open = funds.filter((fund) => fund.subscribeStatus === "开放申购").length
-  const paused = funds.filter((fund) => fund.subscribeStatus === "暂停申购").length
-  const nasdaq = funds.filter((fund) => fund.isNasdaqLike).length
+export function FundStatCards({ funds, channel }: { funds: FundRecord[]; channel: ChannelKey }) {
+  const quotes = funds.map((fund) => fund.channels[channel])
+  const open = quotes.filter((quote) => quote.status === "open").length
+  const paused = quotes.filter((quote) => quote.status === "paused").length
+  const limited = quotes.filter((quote) => quote.statusText.includes("限大额")).length
+  const unknown = quotes.filter((quote) => quote.status === "unknown").length
 
-  const cards = [
-    { title: "QDII/海外基金", value: funds.length, icon: Globe2, hint: "默认识别范围" },
-    { title: "开放申购", value: open, icon: CheckCircle2, hint: "当前可申购" },
-    { title: "暂停申购", value: paused, icon: Ban, hint: "当前不可申购" },
-    { title: "纳指相关", value: nasdaq, icon: TrendingUp, hint: "名称命中纳指关键词" },
-  ]
+  const cards =
+    channel === "distribution"
+      ? [
+          { title: "QDII/海外基金", value: funds.length, icon: Globe2, hint: "默认识别范围" },
+          { title: "开放申购", value: open, icon: CheckCircle2, hint: "含限大额基金" },
+          { title: "限大额", value: limited, icon: Gauge, hint: "可申购但有单日上限" },
+          { title: "暂停申购", value: paused, icon: Ban, hint: "当前不可申购" },
+        ]
+      : [
+          { title: "直销已收录", value: quotes.length - unknown, icon: Store, hint: "人工核实过直销口径" },
+          { title: "直销可申购", value: open, icon: CheckCircle2, hint: "含限大额基金" },
+          { title: "直销暂停", value: paused, icon: Ban, hint: "官方平台暂停申购" },
+          { title: "待核实", value: unknown, icon: HelpCircle, hint: "尚未核对基金公司直销" },
+        ]
 
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

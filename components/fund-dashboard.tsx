@@ -5,6 +5,8 @@ import { CircleAlert, Clock, Globe2, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
 
 import { ThemeToggle } from "@/components/theme-toggle"
+import { FundChannelTabs } from "@/components/fund-channel-tabs"
+import { FundStatCards } from "@/components/fund-stat-cards"
 import { FundTable } from "@/components/fund-table"
 import { FundToolbar, type FundToolbarState } from "@/components/fund-toolbar"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -13,33 +15,40 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { formatDateTime } from "@/lib/fund-format"
-import type { FundRecord, FundsApiResponse, ThemeCategory } from "@/lib/types"
+import type { ChannelKey, FundRecord, FundsApiResponse, ThemeCategory } from "@/lib/types"
 
 const defaultToolbar: FundToolbarState = {
   query: "",
   regions: ["us"],
   themes: ["nasdaq100"],
-  status: "open",
+  status: "all",
   limit: "all",
+  form: "off-exchange",
 }
 
-function filterFunds(funds: FundRecord[], state: FundToolbarState) {
+function filterFunds(funds: FundRecord[], state: FundToolbarState, channel: ChannelKey) {
   const query = state.query.trim().toLowerCase()
 
   return funds.filter((fund) => {
     if (query) {
-      const haystack = `${fund.code} ${fund.name} ${fund.type}`.toLowerCase()
+      const haystack = `${fund.code} ${fund.name} ${fund.type} ${fund.fundCompany?.name ?? ""}`.toLowerCase()
       if (!haystack.includes(query)) return false
     }
 
-    if (state.status === "open" && fund.subscribeStatus !== "开放申购") return false
-    if (state.status === "paused" && fund.subscribeStatus !== "暂停申购") return false
+    const quote = fund.channels[channel]
+
+    if (state.status === "open" && quote.status !== "open") return false
+    if (state.status === "limited" && !quote.statusText.includes("限大额")) return false
+    if (state.status === "paused" && quote.status !== "paused") return false
 
     if (state.regions.length > 0 && !state.regions.includes(fund.regionCategory)) return false
 
     if (state.themes.length > 0 && !state.themes.includes(fund.themeCategory)) return false
 
-    if (state.limit !== "all" && fund.limitLevel !== state.limit) return false
+    if (state.limit !== "all" && quote.limitLevel !== state.limit) return false
+
+    if (state.form === "off-exchange" && fund.tradingForm === "exchange-etf") return false
+    if (state.form !== "all" && state.form !== "off-exchange" && fund.tradingForm !== state.form) return false
 
     return true
   })
@@ -71,12 +80,20 @@ function DashboardSkeleton() {
   )
 }
 
+const CHANNEL_NOTE: Record<ChannelKey, string> = {
+  distribution:
+    "代销口径来自东方财富（天天基金）公开接口，仅用于基金发现、基础状态和额度参考；支付宝、理财通等平台的单日额度以对应平台页面为准。",
+  direct:
+    "直销额度没有统一公开接口，目前按基金公司官网 / 官方 APP 人工核实录入，未核实的显示「待核实」；点击核实入口可直达基金公司信息页。",
+}
+
 export function FundDashboard() {
   const [data, setData] = React.useState<FundsApiResponse | null>(null)
   const [loading, setLoading] = React.useState(true)
   const [refreshing, setRefreshing] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [toolbar, setToolbar] = React.useState<FundToolbarState>(defaultToolbar)
+  const [channel, setChannel] = React.useState<ChannelKey>("distribution")
 
   const loadFunds = React.useCallback(async (refresh = false) => {
     if (refresh) setRefreshing(true)
@@ -118,7 +135,8 @@ export function FundDashboard() {
     },
     [funds],
   )
-  const filteredFunds = React.useMemo(() => filterFunds(funds, toolbar), [funds, toolbar])
+  const filteredFunds = React.useMemo(() => filterFunds(funds, toolbar, channel), [funds, toolbar, channel])
+  const directRecorded = data?.directSales.recorded ?? 0
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.10),transparent_34%),linear-gradient(180deg,#f8fafc_0%,#eef2f7_100%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_32%),linear-gradient(180deg,#020617_0%,#0f172a_100%)]">
@@ -135,7 +153,7 @@ export function FundDashboard() {
                   QDII 基金限额看板
                 </h1>
                 <p className="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
-                  追踪可申购 QDII 基金的单日申购额度、地区主题与开放状态。
+                  通过公开全量基金接口自动发现 QDII 与海外基金，按代销 / 直销两条渠道分别查看申购状态与单日限额，支持地区、主题和交易形态筛选。
                 </p>
               </div>
             </div>
@@ -168,6 +186,14 @@ export function FundDashboard() {
           <DashboardSkeleton />
         ) : (
           <>
+            <FundChannelTabs
+              value={channel}
+              distributionCount={funds.length}
+              directRecorded={directRecorded}
+              directTotal={funds.length}
+              onChange={setChannel}
+            />
+            <FundStatCards funds={filteredFunds} channel={channel} />
             <FundToolbar
               state={toolbar}
               availableThemes={availableThemes}
@@ -179,13 +205,18 @@ export function FundDashboard() {
               <CardContent className="p-0">
                 <div className="flex flex-col gap-2 border-b border-slate-200/80 px-4 py-4 dark:border-slate-800/80 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h2 className="text-base font-semibold text-slate-950 dark:text-slate-50">基金列表</h2>
+                    <h2 className="text-base font-semibold text-slate-950 dark:text-slate-50">
+                      {channel === "distribution" ? "代销渠道列表" : "直销渠道列表"}
+                    </h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                       当前筛选 {filteredFunds.length.toLocaleString("zh-CN")} 条
                     </p>
                   </div>
+                  <p className="max-w-2xl text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    {CHANNEL_NOTE[channel]}
+                  </p>
                 </div>
-                <FundTable funds={filteredFunds} />
+                <FundTable funds={filteredFunds} channel={channel} />
               </CardContent>
             </Card>
           </>

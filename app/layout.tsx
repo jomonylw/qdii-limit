@@ -7,9 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "QDII 基金申购限额查询｜QDII Limit Monitor",
+  title: "QDII 基金分类与申购状态｜QDII Limit Monitor",
   description:
-    "快速查看、检索和监控 QDII 与海外基金的最新申购限额及状态。支持美国纳指 100、标普 500、港股科技、中概互联网等地区和主题的精准多选联动筛选，提供服务端 CDN 高速缓存。",
+    "自动发现全市场 QDII 与海外基金，查询申购状态和额度，并按纳指100、标普500、地区、主题及交易形态筛选。",
   keywords: [
     "QDII基金",
     "海外基金",
@@ -19,9 +19,13 @@ export const metadata: Metadata = {
     "纳指100",
     "标普500",
     "中概互联",
-    "东方财富基金",
+    "支付宝基金",
+    "腾讯理财通",
+    "QDII分类",
     "QDII限额查询",
     "限大额",
+    "基金直销",
+    "基金代销",
     "基金理财",
   ],
   authors: [{ name: "jomonylw" }],
@@ -37,8 +41,8 @@ export const metadata: Metadata = {
     apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
   openGraph: {
-    title: "QDII 基金申购限额查询｜QDII Limit Monitor",
-    description: "快速查看、检索和监控 QDII 与海外基金的最新申购限额及状态。支持多选联动筛选与服务端缓存。",
+    title: "QDII 基金分类与申购状态｜QDII Limit Monitor",
+    description: "自动发现全市场 QDII 与海外基金，支持纳指100、标普500等分类筛选。",
     url: "https://qdii-limit.vercel.app",
     siteName: "QDII Limit Monitor",
     images: [
@@ -54,8 +58,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "QDII 基金申购限额查询｜QDII Limit Monitor",
-    description: "快速查看、检索和监控 QDII 与海外基金的最新申购限额及状态。支持多选联动筛选与服务端缓存。",
+    title: "QDII 基金分类与申购状态｜QDII Limit Monitor",
+    description: "自动发现全市场 QDII 与海外基金，支持纳指100、标普500等分类筛选。",
     images: ["/og.png"],
   },
   verification: {
